@@ -11,6 +11,6 @@ function [GroupMeans] = getGroupMeans(classes, data)
     classes = unique(upscaledClasses)
     nClasses = numel(classes)
     
-    A = accumarraym(upscaledClasses,data, [], @mean)
+    A = accumArrayMatrix(upscaledClasses,data, [], @mean)
 
 end
