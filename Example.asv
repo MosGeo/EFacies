@@ -39,5 +39,5 @@ for i = 1:classesLevel
    classes(classesOrig==uniqueclasses(i)) = i;
 end
 
-mineralMeanTable = classMean(classes, xrf, selectedMineralsNames);
-tocMeanTable     = classMean(classes, toc, {'TOC'});
+xrfMeans = accumarraym(classes, xrf,[] , @nanmean);
+tocMeans = accumarraym(classes, toc,[] , @nanmean);

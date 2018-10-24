@@ -76,8 +76,7 @@ for i = 1:classesLevel
    classes(classesOrig==uniqueclasses(i)) = i;
 end
 
-
-xrfMeans = accumarraym(classes, xrf,[] , @nanmean)';
+xrfMeans = accumArrayMatrix(classes, xrf,[] , @nanmean)';
 tocMeans = accumarraym(classes, toc,[] , @nanmean);
 % ===================================================
 % Convert To interval Data
