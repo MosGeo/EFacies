@@ -1,6 +1,5 @@
 % Load and prepare XRF
 
-wellFolder = wellInput{end};
 selectedMineralsNames = {'Quartz','Illite_K_Rich', 'Calcite', 'Pyrite', 'Apatite_F_Rich'};
 elementsToUse = {'Ca', 'Si', 'Al', 'P', 'K', 'Fe'};
 xrfFile = fullfile(wellFolder,'XRF_Clean.xlsx');
@@ -23,4 +22,4 @@ availableElements = Data.Properties.VariableNames(2:end);
 [Aprime, AprimeTable] = ConstructAprimeMatrix(Minerals, elementsToUse, selectedMineralsNames);
 dataToUse = FilterData(Data,elementsToUse);
 [resultsTable, inputTable] = InvertToMinerals(Aprime, dataToUse, selectedMineralsNames);
-[resultsTable] = MassToVolumeFraction(resultsTable, Minerals)
+[resultsTableVolume] = MassToVolumeFraction(resultsTable, Minerals)
