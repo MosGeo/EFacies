@@ -1,5 +1,7 @@
 function logData = constructLogDataStructure(wellInput, data, depth, lasHeader)
     
+
+    
     logData = [];
 
     if exist('lasHeader', 'var')==true

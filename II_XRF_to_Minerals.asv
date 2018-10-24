@@ -1,0 +1,24 @@
+% Load and prepare XRF
+
+wellFolder = wellInput{end};
+selectedMineralsNames = {'Quartz','Illite1', 'Calcite', 'Pyrite', 'Apatite3'};
+elementsToUse = {'Ca', 'Si', 'Al', 'P', 'K', 'Fe'};
+xrfFile = fullfile(wellFolder,'XRF_Clean.xlsx');
+
+elementsFileName      = 'C:\Users\malibrah\Documents\GitHub\Madini\Elements.csv';
+mineralFileName = 'C:\Users\malibrah\Documents\GitHub\Madini\Minerals.csv';
+[Elements, Minerals] = LoadChemicalConstants(elementsFileName, mineralFileName);
+Data = readtable(xrfFile);
+
+
+% Convert XRF
+availableElements = Data.Properties.VariableNames(2:end);
+[ selectedMinerals ] = selectMineralsByName( Minerals, selectedMineralsNames)
+[~, possibleElements] = getPossibleMinerals(selectedMinerals, availableElements)
+[essentialMinerals] = checkIfElementIsEssential(selectedMinerals, possibleElements, 'Mg')
+
+
+[Aprime, AprimeTable] = ConstructAprimeMatrix(Minerals, elementsToUse, mineralToUse);
+[results, resultsTable] = InvertToMinerals(Aprime, xrfData, mineralToUse, sampleNames);
+[resultsVolume, resultsTableVolume] = MassToVolumeFraction(resultsTable, Minerals);
+PlotResultsTable(resultsTableVolume,1)

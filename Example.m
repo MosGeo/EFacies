@@ -1,23 +1,22 @@
-% ===================================================
 % Define the well used (name, logs, logrithmic, min depth, max depth)
 depthUsed = (10729:1:10827)';
 depthUsed = (10728:1:10824)';
 age = [208, 220]';
 
-wellFolder = 'D:\Users\malibrah\OneDrive\Stanford\Project Cella\Data\Alcor-1';
-wellInputAll{1} = {'Alcor 1 LWD+WL TC+BAT.las', [2 4 6 11 15 20], [11], 10550, 10650};
-wellFolder = 'D:\Users\malibrah\OneDrive\Stanford\Project Cella\Data\Merak-1';
-wellInputAll{1} = {'Merak 1 LWD+Wireline merged.las', [3 7 15 25 33 13], [25], depthUsed(1),  depthUsed(end)};
+wellFolder = 'Data/Alcor-1';
+wellInputAll{1} = {fullfile(wellFolder, 'Logs.las'), [2 4 6 11 15 20], [11], 10550, 10650, wellFolder};
+wellFolder = 'Data/Merak-1';
+wellInputAll{2} = {fullfile(wellFolder, 'Logs.las'), [3 7 15 25 33 13], [25], depthUsed(1),  depthUsed(end), wellFolder};
 
-usedWells = [1];
-variablesToPlot = 1:numel(wellInputAll{usedWells(1)}{2});
+usedWell = 1;
+wellInput = wellInputAll{usedWell};
+variablesToPlot = 1:numel(wellInputAll{usedWell}{2});
 
-% ===================================================
-% Load the well and preprocess
-i = 1;
-wellInput = wellInputAll{usedWells(i)};
-[lasdata, depth, lasHeader]  = importLasFile(wellInput{1});
-logData = constructLogDataStructure(wellInput, lasdata, depth, lasHeader);
-clear curvesNames lasHeader depth data dataMean dataSTD
 
-% ===================================================
+%%
+
+% Well log classification
+I_Well_Log_Classification
+
+% XRF to Minerals
+II_XRF_to_Minerals
