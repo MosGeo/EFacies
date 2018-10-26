@@ -109,18 +109,3 @@ hi = repmat({'525'},numel(finalAge),1)
 
 
 table = [finalAge, name, top, thicknessFinal, layerType, name, erosion, lithology, pse, kinetics, toc, hi]
-
-
-% ===================================================
-% Read and
-% lithologyFilename = 'D:\Users\malibrah\OneDrive\Stanford\Project Cella\Papers\Multiscale Classification of Well Logs and Basin Modeling\B\geo\Lithologies.xml';
-% xDoc = xmlread(lithologyFilename);
-% xRoot = xDoc.getDocumentElement;
-% schema = char(xRoot.getAttribute('xmlns:xsd'));
-% 
-% allListitems = xDoc.getElementsByTagName('Custom rocks');
-% 
-% child = xRoot.getFirstChild;
-% char(child.getNodeType())
-% 
-% char(allListitems.getAttribute('Creator'))

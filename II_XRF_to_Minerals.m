@@ -23,3 +23,5 @@ availableElements = Data.Properties.VariableNames(2:end);
 dataToUse = FilterData(Data,elementsToUse);
 [resultsTable, inputTable] = InvertToMinerals(Aprime, dataToUse, selectedMineralsNames);
 [resultsTableVolume] = MassToVolumeFraction(resultsTable, Minerals)
+
+xrf     = interp1(tableDepth(resultsTableVolume),table2array(resultsTableVolume), depth);

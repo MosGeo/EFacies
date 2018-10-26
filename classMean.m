@@ -1,5 +1,5 @@
 function classMeanTable = classMean(class, data, variableNames)
-%% classMean        Calculates the mean of each class for the data 
+%% CLASSMEAN        Calculates the mean of each class for the data 
 %
 % class:                   Integer for the different classes
 % data:                    Data (each column is a variable)

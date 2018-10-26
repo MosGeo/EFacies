@@ -1,10 +1,8 @@
-function [intervalTable] = point2Interval(class, depth, age, isLump)
+function [intervalTable] = point2Interval(class, depth, age)
 %% point2Interval   Convert a point dataset into an interval dataset
 %
 % class:                    Integer for the different classes
 % depth:                    Depth for each class point
-% age:                      Start and end age of interval
-% isLump:                   Group neighboring intervals with similar class?
 %
 % Mustafa Al Ibrahim @ 2018
 % Mustafa.Geoscientist@outlook.com
@@ -12,8 +10,7 @@ function [intervalTable] = point2Interval(class, depth, age, isLump)
 %% Preprocessing
 
 % Defaults
-if ~exist('age', 'var')   ; age = [0 1]; end
-if ~exist('isLump', 'var'); isLump = true; end
+if ~exist('age', 'var')  ; age = [0 1]; end
 
 % Assertions
 assert(exist('class', 'var') && isvector(class), 'class must be a vector');
@@ -35,12 +32,7 @@ class = class(:);
 depth = depth(:);
 
 % Get the start and end of each interval
-if isLump == true
-    d = [diff(class)~=0; 1];
-else
-    d = ones(size(class));
-end
-
+d = [diff(class)~=0; 1];
 endings = find(d);
 starts = [1; endings(1:end-1)+1];
 
@@ -58,12 +50,12 @@ thickness = endDepths - startDepths;
 thicknessPercentage = thickness/sum(thickness);
 dt = thicknessPercentage*diff(age);
 agesAll = cumsum([0; dt])+ age(1);
-endAges = agesAll(1:end-1);
-startAges = agesAll(2:end);
+endAges = ages(1:end-1);
+startAges = ages(1:end-1);
 
 % Construct table
-interval = [startDepths,  endDepths, classes, endAges, startAges];
-variableNames = {'StartDepth', 'EndDepth', 'Class', 'EndAge', 'StartAge'};
+interval = [startDepths,  endDepths, classes, ages];
+variableNames = {'StartDepth', 'EndDepth', 'Class', 'Age'};
 intervalTable = array2table(interval, 'VariableNames', variableNames);
 
 end

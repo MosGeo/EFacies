@@ -1,8 +1,8 @@
 % ===================================================
 % Load the well and preprocess
-[data, depth, lasHeader]  = importLasFile(wellInput{1});
-logData = constructLogDataStructure(wellInput, data, depth, lasHeader);
-clear curvesNames lasHeader depth data dataMean dataSTD
+[data, lasDepth, lasHeader]  = importLasFile(wellInput{1});
+logData = constructLogDataStructure(wellInput, data, lasDepth, lasHeader);
+clear curvesNames lasHeader lasDepth data dataMean dataSTD
 % ===================================================
 % Build the model
 prepParameters  = createPrepParameters(true, true, 100, 0);

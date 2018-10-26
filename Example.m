@@ -1,5 +1,6 @@
 % Define the well used (name, logs, logrithmic, min depth, max depth)
-depthUsed = (10728:1:10824)';
+clear all
+depth = (10728:1:10824)';
 age = [208, 220]';
 
 wellFolder = 'Data/Alcor-1';
@@ -28,16 +29,28 @@ III_TOC
 %%
 
 classesLevel = 10;
-xrf     = interp1(tableDepth(resultsTableVolume),table2array(resultsTableVolume), depthUsed);
-toc     = interp1(tocdata.Depth, tocdata.TOCPerc, depthUsed);
+class = getClassFromDepth(classData{1}, depth, classesLevel);
+class = renumberClass(class);
 
-classes = getClassFromDepth(classData{1}, depthUsed, classesLevel);
-uniqueclasses = unique(classes);
+mineralMeanTable = classMean(class, xrf, selectedMineralsNames);
+tocMeanTable     = classMean(class, toc, {'TOC'});
 
-classesOrig = classes;
-for i = 1:classesLevel
-   classes(classesOrig==uniqueclasses(i)) = i;
-end
+[intervalTable] = point2Interval(class, depth, age,true);
 
-mineralMeanTable = classMean(classes, xrf, selectedMineralsNames);
-tocMeanTable     = classMean(classes, toc, {'TOC'});
+%% Model building
+
+finalAge = intervalTable.EndAge
+topInterval = intervalTable.StartDepth
+
+name =  cellfun(@(x) ['Shublik_' num2str(x)], num2cell((numel(finalAge):-1:1)'), 'UniformOutput', false);
+top = num2cell(topInterval(starts));
+thicknessFinal = num2cell(thickness);
+layerType = repmat({'Deposition'}, numel(finalAge),1);
+erosion = repmat({''}, numel(finalAge),1);
+lithology = cellfun(@(x) ['Shublik_' num2str(classesLevel) '_' num2str(x)], num2cell(classes(starts)), 'UniformOutput', false);
+pse = repmat({'Source Rock'}, numel(finalAge),1);
+kinetics = repmat({'Burnham(1989)_TII'}, numel(finalAge),1);
+toc = num2cell(tocMeans(classes(starts)))
+hi = repmat({'525'},numel(finalAge),1)
+
+table = [finalAge, name, top, thicknessFinal, layerType, name, erosion, lithology, pse, kinetics, toc, hi]
