@@ -13,7 +13,7 @@ function data = insertRow(data, rows, index)
 % Assertions
 assert(exist('data', 'var')== true, 'data must be provided');
 assert(exist('rows', 'var')== true, 'rows must be provided');
-assert(size(row,1) == size(data,1), 'Number of columns in data and row must be equal');
+assert(size(rows,2) == size(data,2), 'Number of columns in data and row must be equal');
 
 % Defaults
 if ~exist('index', 'var'); index = size(data,1)+1; end

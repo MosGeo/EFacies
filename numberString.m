@@ -23,7 +23,7 @@ assert(ischar(delimiter), 'delimiter must be char');
 %% Main
 
 if isscalar(numbers)
-   numbers = 1:numel(prefix); 
+   numbers = 1:numbers; 
 end
 
 numbers = numbers(:);

@@ -17,11 +17,13 @@ availableElements = Data.Properties.VariableNames(2:end);
 [ selectedMinerals ] = selectMineralsByName( Minerals, selectedMineralsNames)
 [~, possibleElements] = getPossibleMinerals(selectedMinerals, availableElements)
 
-
-
 [Aprime, AprimeTable] = ConstructAprimeMatrix(Minerals, elementsToUse, selectedMineralsNames);
 dataToUse = FilterData(Data,elementsToUse);
 [resultsTable, inputTable] = InvertToMinerals(Aprime, dataToUse, selectedMineralsNames);
-[resultsTableVolume] = MassToVolumeFraction(resultsTable, Minerals)
+[resultsTableVolume] = MassToVolumeFraction(resultsTable, Minerals);
 
+
+selectedMineralsNames = {'Quartz','Illite_K_Rich', 'Calcite'};
+
+resultsTableVolume = FilterData(resultsTableVolume, selectedMineralsNames)
 xrf     = interp1(tableDepth(resultsTableVolume),table2array(resultsTableVolume), depth);

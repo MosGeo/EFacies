@@ -15,7 +15,7 @@ variablesToPlot = 1:numel(wellInputAll{usedWell}{2});
 
 wellFolder = wellInput{end};
 
-%%
+%% Run workflows
 
 % Well log classification
 I_Well_Log_Classification
@@ -26,9 +26,19 @@ II_XRF_to_Minerals
 % TOC
 III_TOC
 
-%%
+%% Upscale to desiered Scale
 
-classesLevel = 10;
+% Set up the model
+PMDirectory = 'C:\Program Files\Schlumberger\PetroMod 2017.1\WIN64\bin';
+PMProjectDirectory = 'C:\EFacies BPSM\BPSM 2017';
+PM = PetroMod(PMDirectory, PMProjectDirectory);
+formationName = 'Shublik';
+
+PM.loadLithology();
+
+for i = 25:-1:1
+
+classesLevel =  i ;
 class = getClassFromDepth(classData{1}, depth, classesLevel);
 class = renumberClass(class);
 
@@ -37,20 +47,148 @@ tocMeanTable     = classMean(class, toc, {'TOC'});
 
 [intervalTable] = point2Interval(class, depth, age,true);
 
-%% Model building
+% Create lithologies
+% 
+fractions = mineralMeanTable{:,:};
+sourceLithologies = {'Sandstone (typical)', 'Shale (typical)', 'Limestone (organic rich - 1-2% TOC)'};
+mixerType = 'V';
+outputPrefix = [formationName, '_', num2str(classesLevel)];
+groupName = 'BPSM ToolBox';
+subGroupName = ['Scale_', num2str(classesLevel)];
 
-finalAge = intervalTable.EndAge
-topInterval = intervalTable.StartDepth
+[petroModIds] = patchMixer(fractions, sourceLithologies, PM, mixerType, outputPrefix, groupName, subGroupName);
 
-name =  cellfun(@(x) ['Shublik_' num2str(x)], num2cell((numel(finalAge):-1:1)'), 'UniformOutput', false);
-top = num2cell(topInterval(starts));
-thicknessFinal = num2cell(thickness);
-layerType = repmat({'Deposition'}, numel(finalAge),1);
-erosion = repmat({''}, numel(finalAge),1);
-lithology = cellfun(@(x) ['Shublik_' num2str(classesLevel) '_' num2str(x)], num2cell(classes(starts)), 'UniformOutput', false);
-pse = repmat({'Source Rock'}, numel(finalAge),1);
-kinetics = repmat({'Burnham(1989)_TII'}, numel(finalAge),1);
-toc = num2cell(tocMeans(classes(starts)))
-hi = repmat({'525'},numel(finalAge),1)
+lithoPMIds{i} = petroModIds;
+%PM.restoreProject();
 
-table = [finalAge, name, top, thicknessFinal, layerType, name, erosion, lithology, pse, kinetics, toc, hi]
+end
+PM.saveLithology();
+
+
+%% Create Models
+
+% Create PetroMod Table
+for i = 25:-1:1
+classesLevel =  i ;
+class = getClassFromDepth(classData{1}, depth, classesLevel);
+class = renumberClass(class);
+
+mineralMeanTable = classMean(class, xrf, selectedMineralsNames);
+tocMeanTable     = classMean(class, toc, {'TOC'});
+
+[intervalTable] = point2Interval(class, depth, age,false);
+
+
+nRows = size(intervalTable,1);
+
+TopID  = num2cell((100:100+nRows-1)');
+TopAge = num2cell(intervalTable.EndAge);
+TopName = numberString([formationName '_' num2str(classesLevel)], nRows);
+PresentDayDepth = num2cell(intervalTable.StartDepth/3.2808399);
+PresentDayThickness = num2cell((intervalTable.EndDepth - intervalTable.StartDepth)/3.2808399);
+EventType = num2cell(zeros(nRows,1));
+LayerName = TopName;
+LayerType = repmat({'Deposition'}, nRows,1);
+PaleoDifference = num2cell(repmat(99999, nRows,1));
+PaleoBalance = num2cell(repmat(99999, nRows,1));
+Lithology = num2cell(cellfun(@eval, lithoPMIds{i}(intervalTable.Class)));
+PSE = num2cell(2*ones(nRows,1));
+KineticUUID = repmat({'03d79ac0-208f-4480-890c-efbcaaba9b0a'}, nRows,1);
+TOC = num2cell(tocMeanTable.TOC(intervalTable.Class));
+HI = num2cell(repmat(525, nRows,1));
+ColorLayer = num2cell(repmat(-1, nRows,1));
+ColorFacies = num2cell(repmat(-1, nRows,1));
+ToolUsage   = num2cell(repmat(-1, nRows,1));
+ThrustFromAge = num2cell(repmat(99999, nRows,1));
+
+highResPMTable = [TopID, TopAge, TopName, PresentDayDepth, PresentDayThickness, EventType, LayerName,...
+    PaleoDifference, PaleoBalance, Lithology, PSE, KineticUUID, TOC, HI, ColorLayer,...
+    ColorFacies, ToolUsage, ThrustFromAge];
+
+% Model modification
+
+templateModel = 'Merak';
+newModel = ['Merak_', num2str(classesLevel)];
+nDim = 1;
+
+% Load and dublicate the model
+PM = PetroMod(PMDirectory, PMProjectDirectory);
+PM.deleteModel(newModel, nDim);
+PM.dublicateModel(templateModel, newModel, nDim);
+model = Model1D(newModel, PMProjectDirectory);
+
+% Update the number of runs (needed to be high for high resolution modeling
+% in order for the results to converge.
+% model.printTable('Simulation')
+model.updateData('Simulation', 8, 'Ooru');
+model.updateData('Simulation', 2, 'Omig1');
+
+% Find the Shublik Formation
+%model.printTable('Main');
+
+mainData = model.getData('Main');
+formationIndex = find(ismember(mainData(:,3), 'Shublik'));
+mainData(formationIndex,:)=[];
+
+% Inserting the new rows
+highResPMTable = insertRow(mainData, highResPMTable, formationIndex);
+model.updateData('Main', highResPMTable);
+model.updateModel();
+
+end
+
+%% Simulate Models
+
+for i = 25:-1:1
+    
+    classesLevel =  i ;
+    newModel = ['Merak_', num2str(classesLevel)];
+    nDim = 1;
+    [output] = PM.simModel(newModel, nDim, true);
+
+end
+
+%% Run scripts
+
+layerNumbers = [3, 7, 103, 18, 97];
+layerNames   = {'Layer', 'Depth', 'Porosity', 'PorePressure', 'TR'};
+for i = 25:-1:1
+   
+    classesLevel =  i
+    newModel = ['Merak_', num2str(classesLevel)];
+    
+    data{classesLevel} = []; 
+    for iLayer = 1:numel(layerNumbers)
+        [cmdout, status] = PM.runScript(newModel, 1, 'demo_opensim_output_3rd_party_format', num2str(layerNumbers(iLayer)), false); 
+        [id, value, layer, unit] = readDemoScriptOutput('demo_1.txt');
+        data{classesLevel} = [data{classesLevel}, value];
+    end
+end
+
+delete('demo_1.txt')
+
+
+%% Plotting
+qs = Qias();
+
+meanValues = [];
+figure('Color', 'White')
+layerIndex = 3
+for i = 25:-3:1
+    classesLevel =  i ;
+    
+    depthToPlot = [data{classesLevel}(2:end,2); 14.6304];
+    [depthToPlot] = (qs.convert(depthToPlot, 'm', 'ft', 'Distance'));
+    dataToPlot = data{classesLevel}(:,layerIndex);
+    
+    indexToKeep = depthToPlot>= min(depth) & depthToPlot<= max(depth);
+    depthToPlot = depthToPlot(indexToKeep);
+    dataToPlot  = dataToPlot(indexToKeep);
+    
+    plot(dataToPlot, depth);
+    hold on
+    meanValues(i) = mean(dataToPlot);
+end
+
+set(gca, 'yDir', 'reverse')
+

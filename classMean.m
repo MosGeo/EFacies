@@ -1,4 +1,4 @@
-function classMeanTable = classMean(class, data, variableNames)
+function classMeanTable = classMean(class, data, variableNames, functionHandle)
 %% CLASSMEAN        Calculates the mean of each class for the data 
 %
 % class:                   Integer for the different classes
@@ -9,6 +9,9 @@ function classMeanTable = classMean(class, data, variableNames)
 
 %% Preprocessing
 
+% Defaults
+if ~exist('functionHandle', 'var'); functionHandle = @nanmean; end
+
 % Assertions
 assert(exist('class', 'var') && isvector(class), 'class must be a vector');
 assert(exist('data', 'var') && isnumeric(data), 'data must be numeric');
@@ -16,10 +19,10 @@ assert(exist('data', 'var') && isnumeric(data), 'data must be numeric');
 
 %% Main
 
-variable = accumArrayMatrix(class, data, @nanmean);
+variable = accumArrayMatrix(class, data, functionHandle);
 
-classesNames = sort(unique(class))';
-classesNames = arrayfun(@num2str, classesNames, 'UniformOutput', false);
+classesNames   = sort(unique(class))';
+classesNames   = arrayfun(@num2str, classesNames, 'UniformOutput', false);
 classMeanTable = array2table(variable, 'RowNames', classesNames);
 
 if exist('variableNames' , 'var')
