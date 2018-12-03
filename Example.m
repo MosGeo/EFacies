@@ -35,6 +35,7 @@ PM = PetroMod(PMDirectory, PMProjectDirectory);
 formationName = 'Shublik';
 
 PM.loadLithology();
+PM.restoreProject();
 
 for i = 25:-1:1
 
@@ -51,7 +52,7 @@ tocMeanTable     = classMean(class, toc, {'TOC'});
 % 
 fractions = mineralMeanTable{:,:};
 sourceLithologies = {'Sandstone (typical)', 'Shale (typical)', 'Limestone (organic rich - 1-2% TOC)'};
-mixerType = 'V';
+mixerType = 'H';
 outputPrefix = [formationName, '_', num2str(classesLevel)];
 groupName = 'BPSM ToolBox';
 subGroupName = ['Scale_', num2str(classesLevel)];
@@ -121,7 +122,7 @@ model = Model1D(newModel, PMProjectDirectory);
 % in order for the results to converge.
 % model.printTable('Simulation')
 model.updateData('Simulation', 8, 'Ooru');
-model.updateData('Simulation', 2, 'Omig1');
+%model.updateData('Simulation', 2, 'Omig1');
 
 % Find the Shublik Formation
 %model.printTable('Main');
@@ -150,8 +151,9 @@ end
 
 %% Run scripts
 
-layerNumbers = [3, 7, 103, 18, 97];
+layerNumbers = [7, 104];
 layerNames   = {'Layer', 'Depth', 'Porosity', 'PorePressure', 'TR'};
+data = [];
 for i = 25:-1:1
    
     classesLevel =  i
@@ -173,11 +175,11 @@ qs = Qias();
 
 meanValues = [];
 figure('Color', 'White')
-layerIndex = 3
-for i = 25:-3:1
+layerIndex = 2
+for i = 25:-1:2
     classesLevel =  i ;
     
-    depthToPlot = [data{classesLevel}(2:end,2); 14.6304];
+    depthToPlot = [data{classesLevel}(2:end,1); 14.6304];
     [depthToPlot] = (qs.convert(depthToPlot, 'm', 'ft', 'Distance'));
     dataToPlot = data{classesLevel}(:,layerIndex);
     
