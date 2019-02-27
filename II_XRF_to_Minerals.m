@@ -4,8 +4,8 @@ selectedMineralsNames = {'Quartz','Illite_K_Rich', 'Calcite', 'Pyrite', 'Apatite
 elementsToUse = {'Ca', 'Si', 'Al', 'P', 'K', 'Fe'};
 xrfFile = fullfile(wellFolder,'XRF_Clean.xlsx');
 
-elementsFileName      = 'C:\Users\malibrah\Documents\GitHub\Madini\Elements.csv';
-mineralFileName = 'C:\Users\malibrah\Documents\GitHub\Madini\Minerals.csv';
+elementsFileName      = 'C:\Users\malibrah\Documents\GitHub\Madini\Source code\Elements.csv';
+mineralFileName = 'C:\Users\malibrah\Documents\GitHub\Madini\Source code\Minerals.csv';
 [Elements, Minerals] = LoadChemicalConstants(elementsFileName, mineralFileName);
 Minerals = AnalyzeMinerals(Elements, Minerals);
 
