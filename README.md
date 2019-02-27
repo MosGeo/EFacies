@@ -3,7 +3,7 @@
 A workflow for stochastic electrofacies classification from borehold depth data.
 
 <div align="center">
-    <img width=1000 src="https://github.com/MosGeo/Qias/blob/master/Figures/GraphExample.png" alt="Graph" title="Graph example"</img>
+    <img width=1000 src="https://github.com/MosGeo/Efacies/blob/master/Figures/Main.png" alt="Graph" title="Graph example"</img>
 </div>
 
 # How does it work?
