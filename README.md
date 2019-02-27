@@ -2,6 +2,10 @@
 
 A workflow for stochastic electrofacies classification from borehold depth data.
 
+<div align="center">
+    <img width=1000 src="https://github.com/MosGeo/Qias/blob/master/Figures/GraphExample.png" alt="Graph" title="Graph example"</img>
+</div>
+
 # How does it work?
 
 The procedure used here involves a number of steps. Different settings can modify the workflow at each step.
