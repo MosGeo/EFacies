@@ -34,10 +34,13 @@ for i =1:nVariables
       set(gca,'ylim', yLimitVector)
       %title([curvesNames{currentCurvesToUse}],'interpreter', 'none')
       if  isempty(lasHeader) == false
-         title([curvesNames{currentCurvesToUse}  ' (' lasHeader.curves.units{currentCurvesToUse} ')'],'interpreter', 'none')
+         title([curvesNames{currentCurvesToUse}],'interpreter', 'none')
+         xlabel(lasHeader.curves.units{currentCurvesToUse});
       else
          title([curvesNames{currentCurvesToUse}],'interpreter', 'none')
       end
+      set(gca, 'FontUnits','points', 'FontWeight','normal', 'FontSize',12, 'FontName','Times')
+
 end
 
 %scaledFinalClasses =255*(finalClasses-min(finalClasses(:))) ./ (max(finalClasses(:)-min(finalClasses(:))));
@@ -61,6 +64,8 @@ set(gca, 'YTick', yticks, 'YTickLabel', yticklabels(:))
 
 set(gca,'ytick',[])
 title ('Multi-Scale Electrofacies')
+set(gca, 'FontUnits','points', 'FontWeight','normal', 'FontSize',12, 'FontName','Times')
+
 
 % Update Plot
 ax= gca;
