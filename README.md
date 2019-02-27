@@ -1,6 +1,6 @@
 # EFacies: Multiscale electrofacies analysis on borhole data
 
-A workflow for stochastic electrofacies classification from borehold depth data.
+A workflow for stochastic electrofacies classification from borehold depth data. The code is modularized so that different components can be replaced and modified easily.
 
 <div align="center">
     <img width=1000 src="https://github.com/MosGeo/Efacies/blob/master/Figures/Main.png" alt="Graph" title="Graph example"</img>
