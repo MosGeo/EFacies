@@ -4,7 +4,7 @@ A workflow for stochastic electrofacies classification from borehold depth data.
 
 # How does it work?
 
-The procedure used:
+The procedure used here involves a number of steps. Different settings can modify the workflow at each step.
 1. Preprocessing including normalization
 2. Principle component analysis to decorrelate the data
 3. Self organizing maps for initial classification
