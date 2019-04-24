@@ -1,20 +1,27 @@
 function [resultsFigure] = plotElectrofacies(curvesToUse, logScaleVariables, data, depth, lasHeader, curvesNames, upscaledClasses, maxnClasses, minnClasses, maxProb, selectedProb, mainScale, isDrawLines, colorMap, variablesToPlot)
-%UNTITLED5 Summary of this function goes here
-%   Detailed explanation goes here
+%PLOTELECTROFACIES Plots the electrofacies results
+%   Plots the electrofacies results
 
-if exist('variablesToPlot', 'var') == false
-    variablesToPlot = 1:numel(curvesToUse);
-end
+%% Preprocessing
+
+% Defaults
+if ~exist('variablesToPlot', 'var'); variablesToPlot = 1:numel(curvesToUse); end
+
+
+%% Main
+
+% Initialize figures
 resultsFigure = figure('Name','ElectroMos', 'NumberTitle','off', 'Color', 'white');
 set(gcf,'units','normalized','outerposition',[0 0 1 1])
 
 nVariables = numel(variablesToPlot);
 %rawData = score
 yLimitVector = round([min(depth) max(depth)]);
+
 for i =1:nVariables
    currentCurvesToUse = curvesToUse(variablesToPlot(i));
    subplot(1, nVariables+4,i)
-   logScaleVariables(currentCurvesToUse) 
+   
    if logScaleVariables(currentCurvesToUse) == true
        semilogx(data(:,i), depth,'k' , 'LineWidth', 2)
    else
