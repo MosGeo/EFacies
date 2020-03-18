@@ -16,7 +16,7 @@ The procedure used here involves a number of steps. Different settings can modif
 
 # How to run?
 
-Check the main.m file for an example on how to use the code.
+Check the main.m file for an example on how to use the code. The las reader has its own repository (https://github.com/MosGeo/LasToolbox)
 
 # Reference
 Al Ibrahim, M. A., and Mukerji, T., 2015, Stochastic Multiscale Electrofacies Classification of Well Logs: A Case Study From North Slope, Alaska: Presented at the AAPG Annual Convention and Exhibition, Calgary, Alberta, Canada.
